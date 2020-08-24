@@ -7,14 +7,11 @@ c = db.cursor()
 c.execute("SELECT id, url FROM cameras")
 cameras = c.fetchall()
 
-os.makedirs("/tmp/juniorgopher", exist_ok=True)
 for camera_id, camera_url in cameras:
-    pipe_path = F"/tmp/juniorgopher/{camera_id}"
-    if not os.path.exists(pipe_path):
-        os.mkfifo(pipe_path)
-    elif not stat.S_ISFIFO(os.stat(pipe_path).st_mode):
-        print(F"expected fifo at {pipe_path}, didn't get, continuing")
-        continue
-    os.makedirs(F"/var/lib/juniorgopher/{camera_id}", exist_ok=True)
-    print(F'/usr/bin/ffmpeg -i {camera_url} -use_wallclock_as_timestamps 1 -c:v copy -an -f segment -strftime 1 -segment_time 60 -segment_format mp4 "/var/lib/juniorgopher/{camera_id}/%s.mp4" -c:v copy -an -f mpegts pipe:/tmp/juniorgopher/{camera_id}')
-#    ffmpeg_subprocess = subprocess.Popen(shlex.split(F'/usr/bin/ffmpeg -i {camera_url} -use_wallclock_as_timestamps 1 -c:v copy -an -f segment -strftime 1 -segment_time 60 -segment_format mp4 "/var/lib/juniorgopher/{camera_id}/%s.mp4" -c:v copy -an -f mpegts pipe:/tmp/juniorgopher/{camera_id}.pipe'))
+    camera_segment_path = F"/var/lib/juniorgopher/segments/{camera_id}"
+    os.makedirs(camera_segment_path, exist_ok=True)
+    pid_path = F"/run/juniorgopher"
+    os.makedirs(pid_path, exist_ok=True)
+    start_stop_daemon = F'start-stop-daemon --start --background --make-pidfile --pidfile {pid_path}/{camera_id}.ffmpeg.pid --exec /usr/bin/ffmpeg -- -i {camera_url} -use_wallclock_as_timestamps 1 -c:v copy -an -f segment -strftime 1 -segment_time 60 -segment_format mp4 {camera_segment_path}/%s.mp4'
+    print(subprocess.run(shlex.split(start_stop_daemon)))
+
