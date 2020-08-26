@@ -26,7 +26,7 @@ def monitor_camera(camera_id, camera_url):
             print(camera_id, capture.get(cv.CAP_PROP_POS_FRAMES))
             
             foreground_mask = background_subtractor.apply(frame)
-            ret, threshold_image = cv2.threshold(foreground_mask, 150, 255, cv2.THRESH_BINARY)
+            ret, threshold_image = cv.threshold(foreground_mask, 150, 255, cv.THRESH_BINARY)
             contours, hierarchy = cv.findContours(threshold_image, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
             retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(frame_time) + ".jpg"), fgMask)
 
