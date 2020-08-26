@@ -20,7 +20,7 @@ def monitor_camera(camera_id, camera_url):
 
         frame_time = start_time + capture.get(cv.CAP_PROP_POS_MSEC) / 1000
         
-        if capture.get(cv.CAP_PROP_POS_FRAMES) % (frame_rate / 5):
+        if (capture.get(cv.CAP_PROP_POS_FRAMES) % (frame_rate / 5)) == 0:
             print(camera_id, capture.get(cv.CAP_PROP_POS_FRAMES))
             fgMask = background_subtractor.apply(frame)
 
