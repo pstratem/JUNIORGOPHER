@@ -32,7 +32,6 @@ def monitor_camera(camera_id, camera_url):
             for contour in contours:
                 # if the contour is too small, ignore it
                 contour_area = cv.contourArea(contour)
-                print(contour_area, (frame.shape[0] * frame.shape[1]) * 0.01)
                 if contour_area < (frame.shape[0] * frame.shape[1]) * 0.01:
                     continue
                 # compute the bounding box for the contour, draw it on the frame,
@@ -42,6 +41,7 @@ def monitor_camera(camera_id, camera_url):
                 contour_image = cv.putText(contour_image, str(contour_area), (x, y), cv.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))
                 contours_written += 1
             if contours_written > 0:
+                print([a.scale for a in [frame, foreground_mask, threshold_image, contour_image]])
                 retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + ".jpg"), cv.hconcat([frame, foreground_mask, threshold_image, contour_image]))
 
         if False:
