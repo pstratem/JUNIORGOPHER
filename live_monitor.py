@@ -48,6 +48,7 @@ def monitor_camera(camera_id, camera_url):
                 contour_image = cv.putText(contour_image, str(contour_area), (x, y), cv.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))
                 contours_written += 1
             if contours_written > 0:
+                print(output_frame.scale, contour_image.scale)
                 output_frame = cv.hconcat([output_frame, contour_image])
                 retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(frame_time) + ".jpg"), frame)
 
