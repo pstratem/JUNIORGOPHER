@@ -21,6 +21,7 @@ def monitor_camera(camera_id, camera_url):
         frame_time = start_time + capture.get(cv.CAP_PROP_POS_MSEC) / 1000
         
         if capture.get(cv.CAP_PROP_POS_FRAMES) % (frame_rate / 5):
+            print(camera_id, capture.get(cv.CAP_PROP_POS_FRAMES))
             fgMask = background_subtractor.apply(frame)
 
         if False:
@@ -39,6 +40,7 @@ c.close()
 db.close()
 
 for camera_id, camera_url in cameras:
+    print(camer_id, camera_url)
     p = multiprocessing.Process(target=monitor_camera, args=(camera_id, camera_url))
     p.start()
     
