@@ -32,8 +32,9 @@ def monitor_camera(camera_id, camera_url):
             contours_written = 0
             for contour in contours:
                 # if the contour is too small, ignore it
-                if cv.contourArea(contour) < (frame.shape[0] * frame.shape[1]) * 0.005:
+                if cv.contourArea(contour) < (frame.shape[0] * frame.shape[1]) * 0.01:
                     continue
+                print(cv.contourArea(contour), (frame.shape[0] * frame.shape[1]) * 0.01)
                 # compute the bounding box for the contour, draw it on the frame,
                 # and update the text
                 (x, y, w, h) = cv.boundingRect(contour)
