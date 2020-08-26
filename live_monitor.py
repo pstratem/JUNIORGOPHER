@@ -25,9 +25,9 @@ def monitor_camera(camera_id, camera_url):
         
         if (capture.get(cv.CAP_PROP_POS_FRAMES) % (frame_rate / 5)) == 0:
             foreground_mask = background_subtractor.apply(frame)
-            print(type(foreground_mask), type(frame))
             ret, threshold_image = cv.threshold(foreground_mask, 150, 255, cv.THRESH_BINARY)
             contours, hierarchy = cv.findContours(threshold_image, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+            contour_image = np.copy(frame)
             contours_written = 0
             for contour in contours:
                 # if the contour is too small, ignore it
@@ -41,7 +41,7 @@ def monitor_camera(camera_id, camera_url):
                 contour_image = cv.putText(contour_image, str(contour_area), (x, y), cv.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))
                 contours_written += 1
             if contours_written > 0:
-                print([a.scale for a in [frame, foreground_mask, threshold_image, contour_image]])
+                print([a.shape for a in [frame, foreground_mask, threshold_image, contour_image]])
                 retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + ".jpg"), cv.hconcat([frame, foreground_mask, threshold_image, contour_image]))
 
         if False:
