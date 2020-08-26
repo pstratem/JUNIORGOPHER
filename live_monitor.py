@@ -27,7 +27,7 @@ def monitor_camera(camera_id, camera_url):
             foreground_mask = background_subtractor.apply(frame)
             ret, threshold_image = cv.threshold(foreground_mask, 150, 255, cv.THRESH_BINARY)
             contours, hierarchy = cv.findContours(threshold_image, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
-            contour_image = np.copy(frame)
+            contour_image = frame.clone()
             contours_written = 0
             for contour in contours:
                 # if the contour is too small, ignore it
