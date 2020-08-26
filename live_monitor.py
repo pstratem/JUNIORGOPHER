@@ -12,7 +12,7 @@ def monitor_camera(camera_id, camera_url):
 
     start_time = time.time()
     frame_rate = capture.get(cv.CAP_PROP_FPS)
-    camera_fgmasks_path = F"/var/lib/juniorgopher/segments/{camera_id}"
+    camera_fgmasks_path = F"/var/lib/juniorgopher/fgmasks/{camera_id}"
     os.makedirs(camera_fgmasks_path, exist_ok=True)
 
     while True:
