@@ -32,6 +32,7 @@ def monitor_camera(camera_id, camera_url):
             for contour in contours:
                 # if the contour is too small, ignore it
                 contour_area = cv.contourArea(contour)
+                print(contour_area, (frame.shape[0] * frame.shape[1]) * 0.01)
                 if contour_area < (frame.shape[0] * frame.shape[1]) * 0.01:
                     continue
                 # compute the bounding box for the contour, draw it on the frame,
