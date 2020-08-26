@@ -23,25 +23,32 @@ def monitor_camera(camera_id, camera_url):
         frame_time = start_time + capture.get(cv.CAP_PROP_POS_MSEC) / 1000
         
         if (capture.get(cv.CAP_PROP_POS_FRAMES) % (frame_rate / 5)) == 0:
-            print(camera_id, capture.get(cv.CAP_PROP_POS_FRAMES))
-            
             foreground_mask = background_subtractor.apply(frame)
+            
+            output_frame = foreground_mask
+            
             ret, threshold_image = cv.threshold(foreground_mask, 150, 255, cv.THRESH_BINARY)
+            
+            output_frame = cv.hconcat([output_frame, threshold_image])
+            
             contours, hierarchy = cv.findContours(threshold_image, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+            
+            contour_image = frame
             # loop over the contours
             contours_written = 0
             for contour in contours:
                 # if the contour is too small, ignore it
-                if cv.contourArea(contour) < (frame.shape[0] * frame.shape[1]) * 0.01:
+                contour_area = cv.contourArea(contour)
+                if contour_area < (frame.shape[0] * frame.shape[1]) * 0.01:
                     continue
-                print(cv.contourArea(contour), (frame.shape[0] * frame.shape[1]) * 0.01)
                 # compute the bounding box for the contour, draw it on the frame,
                 # and update the text
                 (x, y, w, h) = cv.boundingRect(contour)
-                cv.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                cv.putText(frame, str(cv.contourArea(contour)), (10, 20), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                contour_image = cv.rectangle(contour_image, (x, y), (x + w, y + h), (0, 255, 0))
+                contour_image = cv.putText(contour_image, str(contour_area), (x, y), cv.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))
                 contours_written += 1
             if contours_written > 0:
+                output_frame = cv.hconcat([output_frame, contour_image])
                 retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(frame_time) + ".jpg"), frame)
 
         if False:
