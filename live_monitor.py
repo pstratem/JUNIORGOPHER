@@ -34,7 +34,7 @@ def monitor_camera(camera_id, camera_url):
                 print(cv.contourArea(contour))
                 # compute the bounding box for the contour, draw it on the frame,
                 # and update the text
-                (x, y, w, h) = cv.boundingRect(c)
+                (x, y, w, h) = cv.boundingRect(contour)
                 cv.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 cv.putText(frame, str(cv.contourArea(contour)), (10, 20), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
             retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(frame_time) + ".jpg"), fgMask)
