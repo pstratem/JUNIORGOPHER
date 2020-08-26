@@ -32,10 +32,8 @@ def monitor_camera(camera_id, camera_url):
             for contour in contours:
                 # if the contour is too small, ignore it
                 contour_area = cv.contourArea(contour)
-                if contour_area < (frame.shape[0] * frame.shape[1]) * 0.005:
+                if contour_area < (threshold_image.shape[0] * threshold_image.shape[1]) * 0.005:
                     continue
-                # compute the bounding box for the contour, draw it on the frame,
-                # and update the text
                 (x, y, w, h) = cv.boundingRect(contour)
                 contour_image = cv.rectangle(contour_image, (x, y), (x + w, y + h), (0, 255, 0))
                 contour_image = cv.putText(contour_image, str(contour_area), (x, y), cv.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))
