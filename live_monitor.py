@@ -26,7 +26,7 @@ def monitor_camera(camera_id, camera_url):
             print(camera_id, capture.get(cv.CAP_PROP_POS_FRAMES))
             
             fgMask = background_subtractor.apply(frame)
-            retval = cv.imwrite(os.path.join(camera_fgmasks_path, frame_time), fgMask)
+            retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(frame_time) + ".jpg"), fgMask)
 
         if False:
             db = psycopg2.connect(dbname="juniorgopher")
