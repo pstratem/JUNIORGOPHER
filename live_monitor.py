@@ -40,7 +40,7 @@ c.close()
 db.close()
 
 for camera_id, camera_url in cameras:
-    print(camer_id, camera_url)
+    print(camera_id, camera_url)
     p = multiprocessing.Process(target=monitor_camera, args=(camera_id, camera_url))
     p.start()
     
