@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import cv2 as cv
-import psycopg2, multiprocessing, time
+import psycopg2, multiprocessing, time, os.path
 
 def monitor_camera(camera_id, camera_url):
     background_subtractor = cv.createBackgroundSubtractorMOG2()
@@ -12,6 +12,8 @@ def monitor_camera(camera_id, camera_url):
 
     start_time = time.time()
     frame_rate = capture.get(cv.CAP_PROP_FPS)
+    camera_fgmasks_path = F"/var/lib/juniorgopher/segments/{camera_id}"
+    os.makedirs(camera_fgmasks_path, exist_ok=True)
 
     while True:
         ret, frame = capture.read()
@@ -22,7 +24,9 @@ def monitor_camera(camera_id, camera_url):
         
         if (capture.get(cv.CAP_PROP_POS_FRAMES) % (frame_rate / 5)) == 0:
             print(camera_id, capture.get(cv.CAP_PROP_POS_FRAMES))
+            
             fgMask = background_subtractor.apply(frame)
+            retval = cv.imwrite(os.path.join(camera_fgmasks_path, frame_time), fgMask)
 
         if False:
             db = psycopg2.connect(dbname="juniorgopher")
