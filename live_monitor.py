@@ -39,8 +39,11 @@ def monitor_camera(camera_id, camera_url):
                 contour_image = cv.putText(contour_image, str(contour_area), (x, y), cv.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))
                 contours_written += 1
             if contours_written > 0:
-                print([a.shape for a in [frame, foreground_mask, threshold_image, contour_image]])
-                retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + ".jpg"), cv.hconcat([frame, np.atleast_3d(foreground_mask), np.atleast_3d(threshold_image), contour_image]))
+                retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "frame" + ".jpg"), frame))
+                retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "mask" + ".jpg"), foreground_mask))
+                retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "threshold" + ".jpg"), threshold_image))
+                retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "contour" + ".jpg"), contour_image))
+                
 
         if False:
             db = psycopg2.connect(dbname="juniorgopher")
