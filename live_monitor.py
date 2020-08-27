@@ -34,9 +34,10 @@ def monitor_camera(camera_id, camera_url):
                 contour_area = cv.contourArea(contour)
                 if contour_area < (threshold_image.shape[0] * threshold_image.shape[1]) * 0.005:
                     continue
-                (x, y, w, h) = cv.boundingRect(contour)
-                contour_image = cv.rectangle(contour_image, (x, y), (x + w, y + h), (0, 255, 0))
-                contour_image = cv.putText(contour_image, str(contour_area), (x, y), cv.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))
+#                (x, y, w, h) = cv.boundingRect(contour)
+#                contour_image = cv.rectangle(contour_image, (x, y), (x + w, y + h), (0, 255, 0))
+                contour_image = cv.drawContours(contour_image, [contour,], 0, (0,0,255), 1)
+#                contour_image = cv.putText(contour_image, str(contour_area), (x, y), cv.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))
                 contours_written += 1
             if contours_written > 0:
                 retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "frame" + ".jpg"), frame)
