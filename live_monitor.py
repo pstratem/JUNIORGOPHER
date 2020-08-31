@@ -33,7 +33,7 @@ def monitor_camera(camera_id, camera_url):
         if (frame_number % (frame_rate / 5)) == 0:
             foreground_mask = background_subtractor.apply(frame)
             if frame_number > background_subtractor.getHistory():
-                ret, threshold_image = cv.threshold(foreground_mask, 250, 255, cv.THRESH_BINARY)
+                ret, threshold_image = cv.threshold(foreground_mask, 125, 255, cv.THRESH_BINARY)
                 despeckled_image = despeckle(threshold_image)
                 contours, hierarchy = cv.findContours(despeckled_image, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
                 motion_threshold = int((frame.shape[0] * 0.05) * (frame.shape[1] * 0.05))
