@@ -35,14 +35,19 @@ def monitor_camera(camera_id, camera_url):
             if frame_number > background_subtractor.getHistory():
                 ret, threshold_image = cv.threshold(foreground_mask, 250, 255, cv.THRESH_BINARY)
                 despeckled_image = despeckle(threshold_image)
-                non_zero_count = cv.countNonZero(despeckled_image)
-                motion_threshold = int((frame.shape[0] * 0.01) * (frame.shape[1] * 0.01))
-
-                if non_zero_count > motion_threshold:
+                contours, hierarchy = cv.findContours(despeckled_image, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+                motion_threshold = int((frame.shape[0] * 0.05) * (frame.shape[1] * 0.05))
+                motion_detected = False
+                for contour in contours:
+                    contour_area = cv.contourArea(contour)
+                    if contour_area > motion_threshold:
+                        motion_detected = True
+                        break
+                if motion_detected:
                     retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "a" + ".jpg"), frame)
                     retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "b" + ".jpg"), foreground_mask)
                     retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "c" + ".jpg"), threshold_image)
-                    retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "d" + F"_{non_zero_count}_{motion_threshold}" + ".jpg"), despeckled_image)
+                    retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "d" + ".jpg"), despeckled_image)
         if False:
             db = psycopg2.connect(dbname="juniorgopher")
             c = db.cursor()
