@@ -4,7 +4,7 @@ import numpy as np
 import psycopg2, multiprocessing, time, os.path
 
 def despeckle(threshold_image):
-    kernel = cv.getStructuringElement(cv.MORPH_RECT, (int(threshold_image.shape[0] * 0.003), int(threshold_image.shape[1] * 0.003)))
+    kernel = cv.getStructuringElement(cv.MORPH_RECT, (int(threshold_image.shape[0] * 0.01), int(threshold_image.shape[1] * 0.01)))
     dilate_image = cv.dilate(threshold_image, kernel)
     erode_image = cv.erode(dilate_image, kernel)
     return erode_image
