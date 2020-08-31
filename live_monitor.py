@@ -28,19 +28,19 @@ def monitor_camera(camera_id, camera_url):
             break
 
         frame_time = start_time + capture.get(cv.CAP_PROP_POS_MSEC) / 1000
+        frame_number = capture.get(cv.CAP_PROP_POS_FRAMES)
         
-        if (capture.get(cv.CAP_PROP_POS_FRAMES) % (frame_rate / 5)) == 0:
+        if (frame_number % (frame_rate / 5)) == 0:
             foreground_mask = background_subtractor.apply(frame)
-            ret, threshold_image = cv.threshold(foreground_mask, 250, 255, cv.THRESH_BINARY)
-            despeckled_image = despeckle(threshold_image)
+            if frame_number > background_subtractor.getHistory():
+                ret, threshold_image = cv.threshold(foreground_mask, 250, 255, cv.THRESH_BINARY)
+                despeckled_image = despeckle(threshold_image)
 
-            if cv.countNonZero(despeckled_image) > int((frame.shape[0] * 0.005) * (frame.shape[1] * 0.005)):
-                retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "a" + ".jpg"), frame)
-                retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "b" + ".jpg"), foreground_mask)
-                retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "c" + ".jpg"), threshold_image)
-                retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "d" + ".jpg"), despeckled_image)
-                
-
+                if cv.countNonZero(despeckled_image) > int((frame.shape[0] * 0.005) * (frame.shape[1] * 0.005)):
+                    retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "a" + ".jpg"), frame)
+                    retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "b" + ".jpg"), foreground_mask)
+                    retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "c" + ".jpg"), threshold_image)
+                    retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "d" + ".jpg"), despeckled_image)
         if False:
             db = psycopg2.connect(dbname="juniorgopher")
             c = db.cursor()
