@@ -36,7 +36,7 @@ def monitor_camera(camera_id, camera_url):
                 ret, threshold_image = cv.threshold(foreground_mask, 250, 255, cv.THRESH_BINARY)
                 despeckled_image = despeckle(threshold_image)
 
-                if cv.countNonZero(despeckled_image) > int((frame.shape[0] * 0.005) * (frame.shape[1] * 0.005)):
+                if cv.countNonZero(despeckled_image) > int((frame.shape[0] * 0.01) * (frame.shape[1] * 0.01)):
                     retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "a" + ".jpg"), frame)
                     retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "b" + ".jpg"), foreground_mask)
                     retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "c" + ".jpg"), threshold_image)
