@@ -5,8 +5,8 @@ import psycopg2, multiprocessing, time, os.path
 
 def despeckle(threshold_image):
     kernel = cv.getStructuringElement(cv.MORPH_RECT, (int(threshold_image.shape[0] * 0.003), int(threshold_image.shape[1] * 0.003)))
-    erode_image = cv.erode(dilate_image, kernel)
-    dilate_image = cv.dilate(threshold_image, kernel)
+    erode_image = cv.erode(threshold_image, kernel)
+    dilate_image = cv.dilate(erode_image, kernel)
     return erode_image
 
 def monitor_camera(camera_id, camera_url):
