@@ -19,7 +19,7 @@ def detect_motion(despeckled_image):
     return False
 
 def monitor_camera(camera_id, camera_url):
-    background_subtractor = cv.createBackgroundSubtractorMOG2(history=500, varThreshold = 16, detectShadows = False)
+    background_subtractor = cv.createBackgroundSubtractorMOG2(history=500, varThreshold = 16, detectShadows = True)
     capture = cv.VideoCapture(camera_url)
 
     if not capture.isOpened:
@@ -42,7 +42,7 @@ def monitor_camera(camera_id, camera_url):
         if (frame_number % (frame_rate / 5)) == 0:
             foreground_mask = background_subtractor.apply(frame)
             if frame_number > background_subtractor.getHistory():
-                ret, threshold_image = cv.threshold(foreground_mask, 255, 255, cv.THRESH_BINARY)
+                ret, threshold_image = cv.threshold(foreground_mask, background_subtractor.getShadowValue(), 255, cv.THRESH_BINARY)
                 despeckled_image = despeckle(threshold_image)
 
                 if detect_motion(despeckled_image):
