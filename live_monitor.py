@@ -5,9 +5,9 @@ import psycopg2, multiprocessing, time, os.path
 
 def despeckle(threshold_image):
     kernel = cv.getStructuringElement(cv.MORPH_RECT, (5,5))
-    erode_image = cv.erode(threshold_image, kernel)
-    dilate_image = cv.dilate(erode_image, kernel)
-    return erode_image
+    open_image = cv.morphologyEx(threshold_image, cv.MORPH_OPEN, kernel)
+    closed_image = cv.morphologyEx(threshold_image, cv.MORPH_CLOSE, kernel)
+    return closed_image
 
 def detect_motion(despeckled_image):
     contours, hierarchy = cv.findContours(despeckled_image, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
