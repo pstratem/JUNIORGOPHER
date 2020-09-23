@@ -19,7 +19,7 @@ def detect_motion(despeckled_image):
     return False
 
 def monitor_camera(camera_id, camera_url):
-    background_subtractor = cv.createBackgroundSubtractorMOG2(history=5000, varThreshold = 16, detectShadows = True)
+    background_subtractor = cv.createBackgroundSubtractorMOG2(history=500, varThreshold = 16, detectShadows = True)
     capture = cv.VideoCapture(camera_url)
 
     if not capture.isOpened:
