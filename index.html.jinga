@@ -5,27 +5,30 @@
         <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     </head>
     <body>
-      {% for camera_id in camera_ids %}
-          <video controls autoplay muted id="{{ camera_id }}" src="{{ camera_id }}.m3u8"></video>
-      {% endfor %}
-<script>
-  function fixCameraFeed(video) {
-      if (Hls.isSupported()) {
-        var hls = new Hls();
-        hls.loadSource(video.src);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, function() {
-          video.play();
-        });
-      }
-      else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.addEventListener('loadedmetadata', function() {
-          video.play();
-        });
-      }
-  }
-  var camera_feeds = document.getElementsByTagName('video')
-  for (let i=0;i<camera_feeds.length;i++)(fixCameraFeed(camera_feeds[i]))
-</script>
+        <div>
+            {% for camera_id in camera_ids %}
+                <video controls autoplay muted id="{{ camera_id }}" src="{{ camera_id }}.m3u8"></video>
+            {% endfor %}
+        </div>
+        <script>
+            function fixCameraFeed(video) {
+                if (Hls.isSupported()) {
+                    var hls = new Hls();
+                    hls.loadSource(video.src);
+                    hls.attachMedia(video);
+                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    video.play();
+                    });
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    video.addEventListener('loadedmetadata', function() {
+                        video.play();
+                    });
+                }
+            }
+            var camera_feeds = document.getElementsByTagName('video')
+            for (let i=0;i<camera_feeds.length;i++) {
+                fixCameraFeed(camera_feeds[i])
+            }
+        </script>
     </body>
 </html>
