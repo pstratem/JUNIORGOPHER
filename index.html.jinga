@@ -5,7 +5,7 @@
     </head>
     <body>
       {% for camera_id in camera_ids %}
-          <video name="camera_feed" controls autoplay muted id="{{ camera_id }}" src="{{ camera_id }}.m3u8" />
+          <video name="camera_feed" controls autoplay muted id="{{ camera_id }}" src="{{ camera_id }}.m3u8"></video>
       {% endfor %}
 <script>
   function fixCameraFeed(video) {
