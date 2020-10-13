@@ -25,7 +25,7 @@
       }
   }
   var camera_feeds = document.getElementsByTagName('video')
-  camera_feeds.forEach(fixCameraFeed)
+  for (let i=0;i<camera_feeds.length;i++)(fixCameraFeed(camera_feeds[i]))
 </script>
     </body>
 </html>
