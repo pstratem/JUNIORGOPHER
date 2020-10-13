@@ -3,11 +3,16 @@
     <head>
         <title>Cameras</title>
         <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+        <style type="text/css">
+            video.camera_feed {
+                width: 33%;
+            }
+        </style>
     </head>
     <body>
         <div>
             {% for camera_id in camera_ids %}
-                <video controls autoplay muted id="{{ camera_id }}" src="{{ camera_id }}.m3u8"></video>
+                <video controls autoplay muted class="camera_feed" id="{{ camera_id }}" src="{{ camera_id }}.m3u8"></video>
             {% endfor %}
         </div>
         <script>
