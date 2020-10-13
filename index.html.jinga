@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <title>Cameras</title>
         <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
