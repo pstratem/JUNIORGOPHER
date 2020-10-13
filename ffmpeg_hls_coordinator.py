@@ -12,6 +12,6 @@ for camera_id, camera_url in cameras:
     os.makedirs(camera_segment_path, exist_ok=True)
     pid_path = F"/run/juniorgopher"
     os.makedirs(pid_path, exist_ok=True)
-    start_stop_daemon = F'/sbin/start-stop-daemon --start --background --make-pidfile --pidfile {pid_path}/{camera_id}.ffmpeg-hls.pid --exec /usr/bin/ffmpeg -- -i {camera_url} -c:v copy -max_muxing_queue_size 1024 -hls_time 1 -hls_list_size 5 -hls_delete_threshold 1 {camera_segment_path}/{camera_id}.m3u8'
+    start_stop_daemon = F'/sbin/start-stop-daemon --start --background --make-pidfile --pidfile {pid_path}/{camera_id}.ffmpeg-hls.pid --exec /usr/bin/ffmpeg -- -i {camera_url} -c:v copy -an -max_muxing_queue_size 1024 -hls_time 1 -hls_list_size 5 -hls_delete_threshold 1 {camera_segment_path}/{camera_id}.m3u8'
     subprocess.run(shlex.split(start_stop_daemon))
 
