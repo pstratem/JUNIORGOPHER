@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import cv2 as cv
 import numpy as np
-import psycopg2, multiprocessing, time, os.path
+import psycopg, multiprocessing, time, os.path
 
 def despeckle(threshold_image):
     kernel = cv.getStructuringElement(cv.MORPH_RECT, (5,5))
@@ -51,14 +51,14 @@ def monitor_camera(camera_id, camera_url):
                     retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "c" + ".jpg"), threshold_image)
                     retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "d" + ".jpg"), despeckled_image)
         if False:
-            db = psycopg2.connect(dbname="juniorgopher")
+            db = psycopg.connect(dbname="juniorgopher")
             c = db.cursor()
             c.execute("SELECT id, url FROM cameras")
             cameras = c.fetchall()
             c.close()
             db.close()
 
-db = psycopg2.connect(dbname="juniorgopher")
+db = psycopg.connect(dbname="juniorgopher")
 c = db.cursor()
 c.execute("SELECT id, url FROM cameras")
 cameras = c.fetchall()

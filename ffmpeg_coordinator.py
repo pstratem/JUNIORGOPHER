@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-import psycopg2, os, os.path, stat, sys, subprocess, shlex
+import psycopg, os, os.path, stat, sys, subprocess, shlex
 
-db = psycopg2.connect(dbname="juniorgopher")
+db = psycopg.connect(dbname="juniorgopher")
 
 c = db.cursor()
 c.execute("SELECT id, url FROM cameras")
