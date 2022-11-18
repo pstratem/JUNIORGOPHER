@@ -17,19 +17,13 @@
         </div>
         <script>
             function setupCameraFeed(video) {
-                if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                    console.log("HLS Native support")
-                    video.play();
-                } else if (Hls.isSupported()) {
-                    console.log("using hls.js MSE support")
-                    var hls = new Hls();
+                if (Hls.isSupported()) {
+                    var hls = new Hls({debug: true, backBufferLength: 30, liveSyncDuration: 1.0, maxLiveSyncPlaybackRate: 1.1, startFragPrefetch: true});
                     hls.loadSource(video.src);
                     hls.attachMedia(video);
                     hls.on(Hls.Events.MANIFEST_PARSED, function() {
                         video.play();
                     });
-                } else {
-                    console.log("nothing supported, give up")
                 }
             }
             var camera_feeds = document.getElementsByTagName('video')
