@@ -34,7 +34,7 @@
             }
             var camera_feeds = document.getElementsByTagName('video')
             for (let i=0;i<camera_feeds.length;i++) {
-                fixCameraFeed(camera_feeds[i])
+                setupCameraFeed(camera_feeds[i])
             }
         </script>
     </body>
