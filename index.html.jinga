@@ -16,18 +16,20 @@
             {% endfor %}
         </div>
         <script>
-            function fixCameraFeed(video) {
-                if (Hls.isSupported()) {
+            function setupCameraFeed(video) {
+                if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    console.log("HLS Native support")
+                    video.play();
+                } else if (Hls.isSupported()) {
+                    console.log("using hls.js MSE support")
                     var hls = new Hls();
                     hls.loadSource(video.src);
                     hls.attachMedia(video);
                     hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    video.play();
-                    });
-                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                    video.addEventListener('loadedmetadata', function() {
                         video.play();
                     });
+                } else {
+                    console.log("nothing supported, give up")
                 }
             }
             var camera_feeds = document.getElementsByTagName('video')
