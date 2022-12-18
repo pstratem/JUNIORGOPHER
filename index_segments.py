@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import psycopg, os, os.path, jinja2, re
 
-segment_pattern = re.compile('(\d+).mp4')
+segment_pattern = re.compile('^(\d+).mp4$')
 
 db = psycopg.connect(dbname="juniorgopher")
 
