@@ -52,5 +52,7 @@ def find_frames_with_motion(fullpath):
         if motion and frame_counter > 0:
             frames_with_motion.append(frame_counter)
 
-frames_with_motion = find_frames_with_motion("1667624710.mp4")
+    return frames_with_motion
+
+frames_with_motion = find_frames_with_motion("1671333271.mp4")
 print(frames_with_motion)
