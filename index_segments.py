@@ -40,4 +40,4 @@ for camera_id, camera_url in cameras:
                 if segment_entry.is_file() and segment_match:
                     relative_path = os.path.join(day_entry.name, segment_entry.name)
                     c.execute("INSERT INTO segments(id, camera_id, start, relative_path, day_start) VALUES (gen_random_uuid(), %s, %s, %s, %s) ON CONFLICT (camera_id, relative_path) DO UPDATE SET relative_path=EXCLUDED.relative_path, day_start=EXCLUDED.day_start", (camera_id, datetime.datetime.utcfromtimestamp(int(segment_match.group(1))), relative_path, datetime.datetime.utcfromtimestamp(int(day_match.group(1)))))
-db.commit()
+                    db.commit()
