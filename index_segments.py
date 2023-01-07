@@ -23,7 +23,7 @@ for camera_id, camera_url in cameras:
         if entry.is_file() and segment_match:
             timestamp = int(segment_match.group(1))
             timestamp_truncated_to_day = timestamp - (timestamp % (3600 * 24))
-            daily_timestamp_dirname = os.path.join(camera_segment_path, )
+            daily_timestamp_dirname = os.path.join(camera_segment_path, str(timestamp_truncated_to_day))
             os.makedirs(daily_timestamp_dirname, exist_ok=True)
             segment_path = os.path.join(camera_segment_path, entry.name)
             new_segment_path = os.path.join(daily_timestamp_dirname, entry.name)
