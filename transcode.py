@@ -17,4 +17,5 @@ for segment_id, camera_id, day_start, relative_path in c.fetchall():
     result = subprocess.run(['/usr/bin/ffmpeg', '-y', '-vsync', '0', '-hwaccel', 'cuda', '-hwaccel_output_format', 'cuda', '-i', os.path.join(day_start_path, segment_filename), '-vf', 'scale_cuda=960:540,fps=fps=5', '-an', '-c:v', 'hevc_nvenc', '-preset', 'p6', '-tune', 'hq', '-qmin', '0', '-g', '250', '-bf', '3', '-b_ref_mode', 'middle', '-temporal-aq', '1', '-rc-lookahead', '20', '-i_qfactor', '0.75', '-b_qfactor', '1.1', '-rc', 'vbr', '-cq', '23', os.path.join(transcoding_directory, segment_filename)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     if result.returncode == 0:
         c.execute("UPDATE segments SET transcoded=now() WHERE id=%s", (segment_id,))
+        db.commit()
 
