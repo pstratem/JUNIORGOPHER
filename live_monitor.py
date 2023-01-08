@@ -24,7 +24,7 @@ def monitor_camera(camera_id, camera_url):
     start_time = time.time()
     frame_counter = 0
     while True:
-        ret, frame_gpu = capture.read()
+        ret, frame_gpu = capture.nextFrame()
         if frame_gpu is None:
             break
         
