@@ -16,7 +16,7 @@ def monitor_camera(camera_id, camera_url):
     background_subtractor = cv2.cuda.createBackgroundSubtractorMOG2(history=500, varThreshold = 16, detectShadows = True)
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5,5))
     open_filter = cv2.cuda.createMorphologyFilter(cv2.MORPH_OPEN, cv2.CV_8UC1, kernel)
-    closed_filter = cv2.cuda.createMorphologyFilter(cv2.MORPH_CLOSE, cv2.CV_8UC1, kernel)
+    close_filter = cv2.cuda.createMorphologyFilter(cv2.MORPH_CLOSE, cv2.CV_8UC1, kernel)
     
     capture = cv2.cudacodec.createVideoReader(camera_url)
     capture.set(cv2.cudacodec.ColorFormat_BGR)
