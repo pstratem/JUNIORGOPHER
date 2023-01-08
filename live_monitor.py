@@ -40,7 +40,7 @@ def monitor_camera(camera_id, camera_url):
         open_filter.apply(frame_gpu, frame_gpu)
         close_filter.apply(frame_gpu, frame_gpu)
         
-        if detect_motion(frame):
+        if detect_motion(frame_gpu.download()):
             print(frame)
             print(F"{camera_id}_{frame_counter}.png")
             cv2.imwrite(F"{camera_id}_{frame_counter}.png", frame)
