@@ -45,7 +45,7 @@ def monitor_camera(camera_id, camera_url):
         despeckled = frame_gpu.download()
         
         if detect_motion(frame_gpu.download()):
-            cv2.imwrite(F"{camera_id}_{frame_counter}.png", np.hstack(original_frame,fgmask,despeckled))
+            cv2.imwrite(F"{camera_id}_{frame_counter}.png", np.hstack([original_frame, fgmask, despeckled]))
         
         frame_counter += 1
 
