@@ -1,62 +1,50 @@
 #!/usr/bin/env python3
-import cv2 as cv
-import numpy as np
-import psycopg, multiprocessing, time, os.path
+import cv2, os, psycopg, multiprocessing, time, os.path, re, queue, json, subprocess
 
-def despeckle(threshold_image):
-    kernel = cv.getStructuringElement(cv.MORPH_RECT, (5,5))
-    open_image = cv.morphologyEx(threshold_image, cv.MORPH_OPEN, kernel)
-    closed_image = cv.morphologyEx(threshold_image, cv.MORPH_CLOSE, kernel)
-    return closed_image
+cv2.setLogLevel(0)
 
-def detect_motion(despeckled_image):
-    contours, hierarchy = cv.findContours(despeckled_image, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
-    motion_threshold = int((despeckled_image.shape[0] * 0.05) * (despeckled_image.shape[1] * 0.05))
+def detect_motion(frame):
+    contours, hierarchy = cv2.findContours(frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    motion_threshold = int((frame.shape[0] * 0.05) * (frame.shape[1] * 0.05))
     for contour in contours:
-        contour_area = cv.contourArea(contour)
+        contour_area = cv2.contourArea(contour)
         if contour_area > motion_threshold:
             return True
     return False
 
 def monitor_camera(camera_id, camera_url):
-    background_subtractor = cv.createBackgroundSubtractorMOG2(history=500, varThreshold = 16, detectShadows = True)
-    capture = cv.VideoCapture(camera_url)
-
-    if not capture.isOpened:
-        print('Unable to open capture')
-        return
-
+    background_subtractor = cv2.cuda.createBackgroundSubtractorMOG2(history=500, varThreshold = 16, detectShadows = True)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5,5))
+    open_image = cv2.cuda.createMorphologyFilter(cv2.MORPH_OPEN, cv2.CV_8UC1, kernel)
+    closed_image = cv2.cuda.createMorphologyFilter(cv2.MORPH_CLOSE, cv2.CV_8UC1, kernel)
+    
+    capture = cv2.cudacodec.createVideoReader(camera_url)
+    capture.set(cv2.cudacodec.ColorFormat_BGR)
+    
     start_time = time.time()
-    frame_rate = capture.get(cv.CAP_PROP_FPS)
-    camera_fgmasks_path = F"/var/lib/juniorgopher/fgmasks/{camera_id}"
-    os.makedirs(camera_fgmasks_path, exist_ok=True)
-
+    frame_counter = 0
     while True:
-        ret, frame = capture.read()
-        if frame is None:
+        ret, frame_gpu = capture.read()
+        if frame_gpu is None:
             break
-
-        frame_time = start_time + capture.get(cv.CAP_PROP_POS_MSEC) / 1000
-        frame_number = capture.get(cv.CAP_PROP_POS_FRAMES)
         
-        if (frame_number % (frame_rate / 5)) == 0:
-            foreground_mask = background_subtractor.apply(frame)
-            if frame_number > background_subtractor.getHistory():
-                ret, threshold_image = cv.threshold(foreground_mask, background_subtractor.getShadowValue(), 255, cv.THRESH_BINARY)
-                despeckled_image = despeckle(threshold_image)
-
-                if detect_motion(despeckled_image):
-                    retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "a" + ".jpg"), frame)
-                    retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "b" + ".jpg"), foreground_mask)
-                    retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "c" + ".jpg"), threshold_image)
-                    retval = cv.imwrite(os.path.join(camera_fgmasks_path, str(int(frame_time*1000)) + "d" + ".jpg"), despeckled_image)
-        if False:
-            db = psycopg.connect(dbname="juniorgopher")
-            c = db.cursor()
-            c.execute("SELECT id, url FROM cameras")
-            cameras = c.fetchall()
-            c.close()
-            db.close()
+        if frame_counter == 0:
+            frame_counter += 1
+            continue
+        
+        frame_gpu = cv2.cuda.resize(frame_gpu, (1920, 1080))
+        frame_gpu = background_subtractor.apply(frame_gpu, -1, None)
+        
+        open_filter.apply(frame_gpu, frame_gpu)
+        close_filter.apply(frame_gpu, frame_gpu)
+        
+        frame = frame_gpu.download()
+        
+        if detect_motion(frame):
+            print(F"{camera_id}_{frame_counter}.png")
+            cv2.imwrite(F"{camera_id}_{frame_counter}.png", frame)
+        
+        frame_counter += 1
 
 db = psycopg.connect(dbname="juniorgopher")
 c = db.cursor()
