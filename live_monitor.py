@@ -46,7 +46,8 @@ def monitor_camera(camera_id, camera_url):
         
         frame_counter += 1
 
-db = psycopg.connect(dbname="juniorgopher")
+config = json.load(open("/etc/juniorgopher/config.json"))
+db = psycopg.connect(config['db'])
 c = db.cursor()
 c.execute("SELECT id, url FROM cameras")
 cameras = c.fetchall()
