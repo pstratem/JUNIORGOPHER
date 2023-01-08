@@ -33,14 +33,15 @@ def monitor_camera(camera_id, camera_url):
             continue
         
         frame_gpu = cv2.cuda.resize(frame_gpu, (1920, 1080))
+        frame = frame_gpu.download()
+        
         frame_gpu = background_subtractor.apply(frame_gpu, -1, None)
         
         open_filter.apply(frame_gpu, frame_gpu)
         close_filter.apply(frame_gpu, frame_gpu)
         
-        frame = frame_gpu.download()
-        
         if detect_motion(frame):
+            print(frame)
             print(F"{camera_id}_{frame_counter}.png")
             cv2.imwrite(F"{camera_id}_{frame_counter}.png", frame)
         
