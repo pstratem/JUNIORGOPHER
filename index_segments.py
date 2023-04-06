@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-import psycopg, os, os.path, jinja2, re, datetime
+import psycopg, os, os.path, jinja2, re, datetime, json
 
 segment_pattern = re.compile('^(\d+).mp4$')
 day_pattern = re.compile('^(\d+)$')
 
-db = psycopg.connect(dbname="juniorgopher")
+config = json.load(open("/etc/juniorgopher/config.json"))
+db = psycopg.connect(config['db'])
 
 c = db.cursor()
 c.execute("SELECT id, url FROM cameras")

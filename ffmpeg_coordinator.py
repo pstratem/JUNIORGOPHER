@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-import psycopg, os, os.path, stat, sys, subprocess, shlex
+import psycopg, os, os.path, stat, sys, subprocess, shlex, json
 
-db = psycopg.connect(dbname="juniorgopher")
+config = json.load(open("/etc/juniorgopher/config.json"))
+db = psycopg.connect(config['db'])
 
 c = db.cursor()
 c.execute("SELECT id, url FROM cameras")
