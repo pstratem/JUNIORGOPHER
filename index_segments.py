@@ -13,7 +13,7 @@ cameras = c.fetchall()
 
 # move segments into hierarchy to improve performance
 for camera_id, camera_url in cameras:
-    camera_segment_path = os.path.join(config['cameras_segment_directory'], camera_id)
+    camera_segment_path = os.path.join(config['cameras_segment_directory'], str(camera_id))
     #ensure the directories exist
     os.makedirs(camera_segment_path, exist_ok=True)
     for entry in os.scandir(camera_segment_path):
