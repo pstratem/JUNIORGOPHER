@@ -11,14 +11,11 @@ c = db.cursor()
 c.execute("SELECT id, url FROM cameras")
 cameras = c.fetchall()
 
-#ensure the directories exist
-for camera_id, camera_url in cameras:
-    camera_segment_path = F"/var/lib/juniorgopher/segments/{camera_id}"
-    os.makedirs(camera_segment_path, exist_ok=True)
-
 # move segments into hierarchy to improve performance
 for camera_id, camera_url in cameras:
-    camera_segment_path = F"/var/lib/juniorgopher/segments/{camera_id}"
+    camera_segment_path = os.path.join(config['cameras_segment_directory'], camera_id})
+    #ensure the directories exist
+    os.makedirs(camera_segment_path, exist_ok=True)
     for entry in os.scandir(camera_segment_path):
         segment_match = segment_pattern.match(entry.name)
         if entry.is_file() and segment_match:
