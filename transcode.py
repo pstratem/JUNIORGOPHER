@@ -8,7 +8,7 @@ c = db.cursor()
 c.execute("SELECT id, camera_id, day_start, relative_path FROM segments WHERE transcoded IS NULL ORDER BY start DESC LIMIT 1440")
 
 for segment_id, camera_id, day_start, relative_path in c.fetchall():
-    camera_segment_path = F"/var/lib/juniorgopher/segments/{camera_id}"
+    camera_segment_path = os.path.join(config['cameras_segment_directory'], str(camera_id))
     day_start_path = os.path.join(camera_segment_path, str(int(day_start.timestamp())))
     transcoding_directory = os.path.join(day_start_path, "540p5")
     os.makedirs(transcoding_directory, exist_ok=True)

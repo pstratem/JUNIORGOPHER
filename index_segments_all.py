@@ -1,23 +1,21 @@
 #!/usr/bin/env python3
-import psycopg, os, os.path, jinja2, re, datetime
+import psycopg, os, os.path, jinja2, re, datetime, json
 
 segment_pattern = re.compile('^(\d+).mp4$')
 day_pattern = re.compile('^(\d+)$')
 
-db = psycopg.connect(dbname="juniorgopher")
+config = json.load(open("/etc/juniorgopher/config.json"))
+db = psycopg.connect(config['db'])
 
 c = db.cursor()
 c.execute("SELECT id, url FROM cameras")
 cameras = c.fetchall()
 
-#ensure the directories exist
-for camera_id, camera_url in cameras:
-    camera_segment_path = F"/var/lib/juniorgopher/segments/{camera_id}"
-    os.makedirs(camera_segment_path, exist_ok=True)
-
 # insert into database
 for camera_id, camera_url in cameras:
-    camera_segment_path = F"/var/lib/juniorgopher/segments/{camera_id}"
+    camera_segment_path = os.path.join(config['cameras_segment_directory'], str(camera_id))
+    #ensure the directories exist
+    os.makedirs(camera_segment_path, exist_ok=True)
     for day_entry in os.scandir(camera_segment_path):
         day_match = day_pattern.match(day_entry.name)
         if day_entry.is_dir() and day_match:
