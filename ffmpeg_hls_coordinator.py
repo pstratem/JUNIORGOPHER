@@ -9,7 +9,7 @@ c.execute("SELECT id, url FROM cameras")
 cameras = c.fetchall()
 
 for camera_id, camera_url in cameras:
-    camera_segment_path = os.path.join(config['cameras_segment_directory'], str(camera_id))
+    camera_segment_path = os.path.join(config['hls_directory'], str(camera_id))
     os.makedirs(camera_segment_path, exist_ok=True)
     pid_path = "/run/juniorgopher"
     os.makedirs(pid_path, exist_ok=True)
