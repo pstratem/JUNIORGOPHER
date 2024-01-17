@@ -38,7 +38,7 @@ def monitor_camera(camera_id, camera_url):
         frame_gpu = background_subtractor.apply(frame_gpu, -1, None)
         fgmask = frame_gpu.download()
         
-        print(cv2.cuda.threshold(frame_gpu, 128, 255, cv2.THRESH_BINARY))
+        retval, frame_gpu = cv2.cuda.threshold(frame_gpu, 128, 255, cv2.THRESH_BINARY)
         
         if frame_counter <= 10:
             frame_counter += 1
