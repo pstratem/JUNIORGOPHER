@@ -29,7 +29,7 @@ def monitor_camera(camera_id, camera_url):
         if frame_gpu is None:
             break
         
-        if frame_counter == 0:
+        if frame_counter <= 10:
             frame_counter += 1
             continue
         
