@@ -5,7 +5,7 @@ import cv2, os, psycopg, multiprocessing, time, os.path, re, queue, json, subpro
 cv2.setLogLevel(0)
 
 def detect_motion(frame):
-    contours, hierarchy = cv2.findContours(frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(frame, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
     motion_threshold = int((frame.shape[0] * 0.05) * (frame.shape[1] * 0.05))
     for contour in contours:
         contour_area = cv2.contourArea(contour)
