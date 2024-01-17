@@ -29,15 +29,15 @@ def monitor_camera(camera_id, camera_url):
         if frame_gpu is None:
             break
         
-        if frame_counter <= 10:
-            frame_counter += 1
-            continue
-        
         frame_gpu = cv2.cuda.resize(frame_gpu, (1920, 1080))
         original_frame = frame_gpu.download()
         
         frame_gpu = background_subtractor.apply(frame_gpu, -1, None)
         fgmask = frame_gpu.download()
+        
+        if frame_counter <= 10:
+            frame_counter += 1
+            continue
         
         open_filter.apply(frame_gpu, frame_gpu)
         close_filter.apply(frame_gpu, frame_gpu)
