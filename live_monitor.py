@@ -48,7 +48,7 @@ def monitor_camera(camera_id, camera_url):
         
         despeckled = frame_gpu.download()
         
-        motion, boxed_image = detect_motion(frame_gpu.download())
+        motion, boxed_frame = detect_motion(frame_gpu.download())
         if motion:
             cv2.imwrite(F"{camera_id}_{frame_counter}.jpg", np.hstack([original_frame, cv2.cvtColor(fgmask, cv2.COLOR_GRAY2BGR), cv2.cvtColor(despeckled, cv2.COLOR_GRAY2BGR), boxed_frame]))
         
