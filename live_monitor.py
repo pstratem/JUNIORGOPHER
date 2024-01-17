@@ -10,10 +10,8 @@ def detect_motion(frame):
     for contour in contours:
         contour_area = cv2.contourArea(contour)
         if contour_area > motion_threshold:
-            rect = cv2.minAreaRect(contour)
-            box = cv2.boxPoints(rect)
-            box = np.int0(box)
-            boxed_frame = cv2.drawContours(frame,[box],0,(0,0,255),2)
+            x,y,w,h = cv.boundingRect(contour)
+            boxed_frame = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
             return True, boxed_frame
     return False, None
 
