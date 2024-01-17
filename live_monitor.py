@@ -11,7 +11,8 @@ def detect_motion(frame):
         contour_area = cv2.contourArea(contour)
         if contour_area > motion_threshold:
             x,y,w,h = cv2.boundingRect(contour)
-            boxed_frame = cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),10)
+            boxed_frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
+            boxed_frame = cv2.rectangle(boxed_frame,(x,y),(x+w,y+h),(0,255,0),10)
             return True, boxed_frame
     return False, None
 
@@ -48,7 +49,7 @@ def monitor_camera(camera_id, camera_url):
         
         motion, boxed_frame = detect_motion(frame_gpu.download())
         if motion:
-            cv2.imwrite(F"{camera_id}_{frame_counter}.jpg", np.hstack([original_frame, cv2.cvtColor(fgmask, cv2.COLOR_GRAY2BGR), cv2.cvtColor(despeckled, cv2.COLOR_GRAY2BGR), cv2.cvtColor(boxed_frame, cv2.COLOR_GRAY2BGR)]))
+            cv2.imwrite(F"{camera_id}_{frame_counter}.jpg", np.hstack([original_frame, cv2.cvtColor(fgmask, cv2.COLOR_GRAY2BGR), cv2.cvtColor(despeckled, cv2.COLOR_GRAY2BGR), boxed_frame]))
         
         frame_counter += 1
 
