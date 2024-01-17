@@ -13,7 +13,7 @@ def detect_motion(frame):
             rect = cv2.minAreaRect(contour)
             box = cv2.boxPoints(rect)
             box = np.int0(box)
-            cv2.drawContours(frame,[box],0,(0,0,255),2)
+            boxed_frame = cv2.drawContours(frame,[box],0,(0,0,255),2)
             return True, frame
     return False, frame
 
