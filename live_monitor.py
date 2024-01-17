@@ -10,8 +10,12 @@ def detect_motion(frame):
     for contour in contours:
         contour_area = cv2.contourArea(contour)
         if contour_area > motion_threshold:
-            return True
-    return False
+            rect = cv2.minAreaRect(contour)
+            box = cv2.boxPoints(rect)
+            box = np.int0(box)
+            cv2.drawContours(frame,[box],0,(0,0,255),2)
+            return True, frame
+    return False, frame
 
 def monitor_camera(camera_id, camera_url):
     background_subtractor = cv2.cuda.createBackgroundSubtractorMOG2(history=500, varThreshold = 16, detectShadows = True)
@@ -44,8 +48,9 @@ def monitor_camera(camera_id, camera_url):
         
         despeckled = frame_gpu.download()
         
-        if detect_motion(frame_gpu.download()):
-            cv2.imwrite(F"{camera_id}_{frame_counter}.jpg", np.hstack([original_frame, cv2.cvtColor(fgmask, cv2.COLOR_GRAY2BGR), cv2.cvtColor(despeckled, cv2.COLOR_GRAY2BGR)]))
+        motion, boxed_image = detect_motion(frame_gpu.download())
+        if motion:
+            cv2.imwrite(F"{camera_id}_{frame_counter}.jpg", np.hstack([original_frame, cv2.cvtColor(fgmask, cv2.COLOR_GRAY2BGR), cv2.cvtColor(despeckled, cv2.COLOR_GRAY2BGR), boxed_frame]))
         
         frame_counter += 1
 
