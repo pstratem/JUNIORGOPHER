@@ -14,8 +14,8 @@ def detect_motion(frame):
             box = cv2.boxPoints(rect)
             box = np.int0(box)
             boxed_frame = cv2.drawContours(frame,[box],0,(0,0,255),2)
-            return True, frame
-    return False, frame
+            return True, boxed_frame
+    return False, None
 
 def monitor_camera(camera_id, camera_url):
     background_subtractor = cv2.cuda.createBackgroundSubtractorMOG2(history=500, varThreshold = 16, detectShadows = True)
